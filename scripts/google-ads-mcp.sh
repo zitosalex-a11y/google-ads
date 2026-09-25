@@ -11,9 +11,16 @@ SPEC="git+https://github.com/googleads/google-ads-mcp.git@${GOOGLE_ADS_MCP_REF}"
 
 log() { echo "[google-ads-mcp] $*" >&2; }
 
-if [[ -z "${GOOGLE_ADS_DEVELOPER_TOKEN:-}" ]]; then
-  log "GOOGLE_ADS_DEVELOPER_TOKEN is not set; API calls will fail."
+# Since Sept 2026, Google Ads API access follows the Google Cloud project that
+# owns the OAuth client; developer tokens are ignored and will later be rejected.
+unset GOOGLE_ADS_DEVELOPER_TOKEN
+
+if [[ -z "${GOOGLE_PROJECT_ID:-}" ]]; then
+  log "GOOGLE_PROJECT_ID is not set; set it to the Cloud project that owns your OAuth client."
+  exit 1
 fi
+# Used by google-auth as the quota/billing project for API calls.
+export GOOGLE_CLOUD_PROJECT="$GOOGLE_PROJECT_ID"
 
 # The server authenticates with Application Default Credentials. When no ADC
 # file is provided, build an "authorized_user" one from the OAuth env vars.
@@ -30,12 +37,14 @@ with open(sys.argv[1], "w") as f:
         "client_id": os.environ["GOOGLE_ADS_CLIENT_ID"],
         "client_secret": os.environ["GOOGLE_ADS_CLIENT_SECRET"],
         "refresh_token": os.environ["GOOGLE_ADS_REFRESH_TOKEN"],
+        "quota_project_id": os.environ["GOOGLE_PROJECT_ID"],
     }, f)
 PY
     export GOOGLE_APPLICATION_CREDENTIALS="$creds_file"
   else
     log "No credentials: set GOOGLE_ADS_CLIENT_ID, GOOGLE_ADS_CLIENT_SECRET and"
     log "GOOGLE_ADS_REFRESH_TOKEN (or GOOGLE_APPLICATION_CREDENTIALS)."
+    exit 1
   fi
 fi
 

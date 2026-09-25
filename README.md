@@ -18,10 +18,12 @@ The server is **read-only**. Its tools are:
 
 ## Setup
 
-### 1. Developer token
-In your Google Ads **manager (MCC)** account go to **Tools → Setup → API Center**,
-apply, and copy the developer token. Production accounts need at least *Explorer*
-access; a *Test* token only works with test accounts.
+### 1. Google Ads API access for your Cloud project
+Since September 2026, Google Ads API access levels belong to the **Google Cloud project
+that owns your OAuth client**. Developer tokens are no longer used; this launcher
+never sends one. Apply for access from the project's **Google Ads API → Overview**
+page in Google Cloud Console. Until production access is approved, the project can only
+query test accounts (API v25 returns `CLOUD_PROJECT_NOT_APPROVED_FOR_PRODUCTION`).
 
 ### 2. Google Cloud OAuth client
 1. In [Google Cloud Console](https://console.cloud.google.com/) create or pick a project.
@@ -43,7 +45,7 @@ Sign in with the Google account that has access to your Ads accounts. The script
 
 | Variable | Required | Value |
 | --- | --- | --- |
-| `GOOGLE_ADS_DEVELOPER_TOKEN` | yes | From step 1 |
+| `GOOGLE_PROJECT_ID` | yes | ID of the Cloud project that owns the OAuth client (the project ID, not its name or number) |
 | `GOOGLE_ADS_CLIENT_ID` | yes | From step 3 |
 | `GOOGLE_ADS_CLIENT_SECRET` | yes | From step 3 |
 | `GOOGLE_ADS_REFRESH_TOKEN` | yes | From step 3 |
@@ -53,7 +55,7 @@ Sign in with the Google account that has access to your Ads accounts. The script
   **Edit**, and add these as environment variables. They apply to new sessions.
 - **Local Claude Code:** export them in your shell, or put them in the `env` block of
   `~/.claude/settings.json`. Instead of the three OAuth variables you can also point
-  `GOOGLE_APPLICATION_CREDENTIALS` at an ADC file created with
+  `GOOGLE_APPLICATION_CREDENTIALS` at an ADC file (`GOOGLE_PROJECT_ID` is still required) created with
   `gcloud auth application-default login --scopes=https://www.googleapis.com/auth/adwords,https://www.googleapis.com/auth/cloud-platform`.
 
 Never commit secrets to this repo.
