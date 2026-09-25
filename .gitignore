@@ -1,0 +1,6 @@
+# Google credentials must never be committed
+*.credentials.json
+client_secret*.json
+google-ads.yaml
+.env
+__pycache__/
