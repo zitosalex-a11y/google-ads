@@ -20,10 +20,10 @@ The server is **read-only**. Its tools are:
 
 ### 1. Google Ads API access for your Cloud project
 Since September 2026, Google Ads API access levels belong to the **Google Cloud project
-that owns your OAuth client**. Developer tokens are no longer used; this launcher
-never sends one. Apply for access from the project's **Google Ads API → Overview**
-page in Google Cloud Console. Until production access is approved, the project can only
-query test accounts (API v25 returns `CLOUD_PROJECT_NOT_APPROVED_FOR_PRODUCTION`).
+that owns your OAuth client**. Developer tokens are optional and no longer decide access;
+if `GOOGLE_ADS_DEVELOPER_TOKEN` is set, the launcher still passes it to the API.
+Apply for access from the project's **Google Ads API → Overview** page in Google Cloud
+Console. Until production access is approved, the project can only query test accounts (API v25 returns `CLOUD_PROJECT_NOT_APPROVED_FOR_PRODUCTION`).
 
 ### 2. Google Cloud OAuth client
 1. In [Google Cloud Console](https://console.cloud.google.com/) create or pick a project.
@@ -49,6 +49,7 @@ Sign in with the Google account that has access to your Ads accounts. The script
 | `GOOGLE_ADS_CLIENT_ID` | yes | From step 3 |
 | `GOOGLE_ADS_CLIENT_SECRET` | yes | From step 3 |
 | `GOOGLE_ADS_REFRESH_TOKEN` | yes | From step 3 |
+| `GOOGLE_ADS_DEVELOPER_TOKEN` | no | Developer token from your manager account's API Center; sent with requests when set |
 | `GOOGLE_ADS_LOGIN_CUSTOMER_ID` | if you access accounts through a manager account | Manager account ID, digits only |
 
 - **Claude Code on the web:** in the session title bar open the cloud environment menu →

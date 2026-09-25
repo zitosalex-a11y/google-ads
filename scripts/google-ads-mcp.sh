@@ -12,8 +12,13 @@ SPEC="git+https://github.com/googleads/google-ads-mcp.git@${GOOGLE_ADS_MCP_REF}"
 log() { echo "[google-ads-mcp] $*" >&2; }
 
 # Since Sept 2026, Google Ads API access follows the Google Cloud project that
-# owns the OAuth client; developer tokens are ignored and will later be rejected.
-unset GOOGLE_ADS_DEVELOPER_TOKEN
+# owns the OAuth client and developer tokens are optional. If
+# GOOGLE_ADS_DEVELOPER_TOKEN is set, the server still sends it with each request.
+if [[ -n "${GOOGLE_ADS_DEVELOPER_TOKEN:-}" ]]; then
+  log "GOOGLE_ADS_DEVELOPER_TOKEN is set; sending it with API requests."
+else
+  log "GOOGLE_ADS_DEVELOPER_TOKEN is not set; relying on Cloud project access."
+fi
 
 if [[ -z "${GOOGLE_PROJECT_ID:-}" ]]; then
   log "GOOGLE_PROJECT_ID is not set; set it to the Cloud project that owns your OAuth client."
